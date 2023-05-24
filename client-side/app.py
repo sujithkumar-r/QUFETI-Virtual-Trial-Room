@@ -17,9 +17,11 @@ def submit():
     cloth = request.files['cloth']
     model = request.files['model']
 
-    ## replace the url from the ngrok url provided on the notebook on server.
-    url = "http://b89a-34-79-184-67.ngrok.io/api/transform"
-    print("sending")
+    # Start Ngrok tunnel
+    ngrok_url = ngrok.connect(5000)  # Replace 5000 with the port number of your server
+    # Get the Ngrok URL
+    url = ngrok_url + "/api/transform"
+    print("Sending request to:", url)
     response = requests.post(url=url, files={"cloth":cloth.stream, "model":model.stream})
     op = Image.open(BytesIO(response.content))
 
@@ -35,4 +37,4 @@ def submit():
     # return render_template('index.html', test=True)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=4040)
+    app.run(debug=True)
